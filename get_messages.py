@@ -18,10 +18,12 @@ def docomo_response(text):
         apikey=os.environ['DOCOMO_API_KEY']
     )
     response = docomo_client.send(utt=text, apiname='Dialogue')
-    return {
+    return [
+        {
         "type":"text",
         "text": response['utt']
-    }
+        }
+    ]
 
 
 def wikipedia_search(text):
@@ -52,10 +54,12 @@ def wikipedia_search(text):
     else:
         response_string = '今はまだ見つけられませんでした。'
 
-    return {
+    return [
+        {
         "type":"text",
         "text": response_string
-    }
+        }
+    ]
 
 
 def weather_information(text):
@@ -96,48 +100,47 @@ def weather_information(text):
         logger.error(traceback.format_exc())
         response_string = 'すいません。天気検索でエラーを起こしてしまいました。'
 
-    return {
-        "type": "text",
-        "text": response_string
-    }
+    return [
+        {
+            "type": "text",
+            "text": response_string
+        }
+    ]
 
 
 def information():
-    messages = [
-              {
-                "type": "template",
-                "altText": u"お得情報",
-                "template": {
-                    "type": "carousel",
-                    "columns": [
-                        {
-                            "thumbnailImageUrl": "https://s3-ap-northeast-1.amazonaws.com/demo.denki.science/mineo-inf.jpg",
-                            "title": u"iPhone SE SIMフリー mineoにしてみました",
-                            "text": u"SIMの見直しでこんなにもお得",
-                            "actions": [
-
-                                {
-                                    "type": "uri",
-                                    "label": u"詳細を見る",
-                                    "uri": "http://www.yamamanx.com/iphone-se-sim-free-mineo/"
-                                }
-                            ]
-                        },
-                        {
-                            "thumbnailImageUrl": "https://s3-ap-northeast-1.amazonaws.com/demo.denki.science/mineo-top.jpg",
-                            "title": u"mineo紹介キャンペーン",
-                            "text": u"Amazonギフト券2,000円をプレゼント",
-                            "actions": [
-
-                                {
-                                    "type": "uri",
-                                    "label": u"申込みページ",
-                                    "uri": "http://mineo.jp/syokai/?jrp=syokai&kyb=T3G8C9Y2H6"
-                                }
-                            ]
-                        },
-                    ]
-                }
-              }
-            ]
-    return messages
+    return [
+        {
+            "type": "template",
+            "altText": u"お得情報",
+            "template": {
+                "type": "carousel",
+                "columns": [
+                    {
+                        "thumbnailImageUrl": "https://s3-ap-northeast-1.amazonaws.com/demo.denki.science/mineo-inf.jpg",
+                        "title": u"iPhone SE SIMフリー mineoにしてみました",
+                        "text": u"SIMの見直しでこんなにもお得",
+                        "actions": [
+                            {
+                                "type": "uri",
+                                "label": u"詳細を見る",
+                                "uri": "http://www.yamamanx.com/iphone-se-sim-free-mineo/"
+                            }
+                        ]
+                    },
+                    {
+                        "thumbnailImageUrl": "https://s3-ap-northeast-1.amazonaws.com/demo.denki.science/mineo-top.jpg",
+                        "title": u"mineo紹介キャンペーン",
+                        "text": u"Amazonギフト券2,000円をプレゼント",
+                        "actions": [
+                            {
+                                "type": "uri",
+                                "label": u"申込みページ",
+                                "uri": "http://mineo.jp/syokai/?jrp=syokai&kyb=T3G8C9Y2H6"
+                            }
+                        ]
+                    },
+                ]
+            }
+        }
+    ]
