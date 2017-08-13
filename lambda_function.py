@@ -60,7 +60,11 @@ def lambda_handler(event, context):
         logger.info(post_response)
 
 
-        response_event = {'line_code': line_code}
+        response_event = {
+            'line_code': line_code,
+            'text': text,
+            'reply': messages[0].get('text','information')
+        }
         client = boto3.client('stepfunctions')
         client.start_execution(
             stateMachineArn=os.environ['STATE_MACHINE_ARN'],
