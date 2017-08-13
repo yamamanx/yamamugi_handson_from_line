@@ -1,0 +1,17 @@
+../doco/__init__.py
+../doco/_compat.py
+../doco/client.py
+../doco/dialogue.py
+../examples/__init__.py
+../examples/dialogue_cli.py
+../doco/__pycache__/__init__.cpython-36.pyc
+../doco/__pycache__/_compat.cpython-36.pyc
+../doco/__pycache__/client.cpython-36.pyc
+../doco/__pycache__/dialogue.cpython-36.pyc
+../examples/__pycache__/__init__.cpython-36.pyc
+../examples/__pycache__/dialogue_cli.cpython-36.pyc
+dependency_links.txt
+PKG-INFO
+requires.txt
+SOURCES.txt
+top_level.txt

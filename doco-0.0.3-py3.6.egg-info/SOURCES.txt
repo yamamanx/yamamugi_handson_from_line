@@ -1,0 +1,16 @@
+LICENSE
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+./doco/__init__.py
+./doco/_compat.py
+./doco/client.py
+./doco/dialogue.py
+./examples/__init__.py
+./examples/dialogue_cli.py
+doco.egg-info/PKG-INFO
+doco.egg-info/SOURCES.txt
+doco.egg-info/dependency_links.txt
+doco.egg-info/requires.txt
+doco.egg-info/top_level.txt
