@@ -9,8 +9,16 @@ import os
 from doco.client import Client
 
 
+log_level = os.environ.get('LOG_LEVEL', 'INFO')
+
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+
+if log_level == 'ERROR':
+    logger.setLevel(logging.ERROR)
+elif log_level == 'DEBUG':
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.INFO)
 
 
 def docomo_response(text):
@@ -18,6 +26,9 @@ def docomo_response(text):
         apikey=os.environ['DOCOMO_API_KEY']
     )
     response = docomo_client.send(utt=text, apiname='Dialogue')
+
+    logger.debug(response)
+
     return [
         {
         "type":"text",
@@ -27,32 +38,32 @@ def docomo_response(text):
 
 
 def wikipedia_search(text):
-    response_string = ''
     wikipedia.set_lang('ja')
     index = text.find('って何')
     search_text = text[0:index]
     search_response = wikipedia.search(search_text)
 
+    logger.debug(search_response)
+
     if len(search_response) > 0:
-        logger.info(len(search_response))
-        logger.info('search_response[0]:' + search_response[0])
+        logger.debug(len(search_response))
+        logger.debug('search_response[0]:' + search_response[0])
 
         try:
             wiki_page = wikipedia.page(search_response[0])
-
         except Exception as e:
-
             try:
                 wiki_page = wikipedia.page(search_response[1])
             except Exception as e:
                 logger.error(traceback.format_exc())
-                response_string = 'すいません。お探しの言葉ではエラーを起こしてしまいました。\n'
 
         response_string = '説明します\n'
         response_string += wiki_page.content[0:200] + '.....\n'
         response_string += wiki_page.url
     else:
         response_string = '今はまだ見つけられませんでした。'
+
+    logger.debug(response_string)
 
     return [
         {
@@ -70,12 +81,20 @@ def weather_information(text):
     try:
         params = {'city':city_id}
         response = requests.get(weather_api_url,params=params)
+
+        logger.debug(response)
+
         response_dict = json.loads(response.text)
+
+        logger.debug(response_dict)
+
         title = response_dict["title"]
         description = response_dict["description"]["text"]
         response_string += title + "です。\n\n"
         forecasts_array = response_dict["forecasts"]
         forcast_array = []
+
+        logger.debug(response_string)
 
         for forcast in forecasts_array:
             telop = forcast["telop"]
@@ -96,9 +115,13 @@ def weather_information(text):
             response_string += '\n\n'.join(forcast_array)
         response_string += '\n\n' + description
 
+        logger.debug(response_string)
+
     except Exception as e:
         logger.error(traceback.format_exc())
         response_string = 'すいません。天気検索でエラーを起こしてしまいました。'
+
+    logger.debug(response_string)
 
     return [
         {

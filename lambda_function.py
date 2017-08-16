@@ -9,8 +9,16 @@ import os
 import get_messages
 
 
+log_level = os.environ.get('LOG_LEVEL', 'INFO')
+
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+
+if log_level == 'ERROR':
+    logger.setLevel(logging.ERROR)
+elif log_level == 'DEBUG':
+    logger.setLevel(logging.DEBUG)
+else:
+    logger.setLevel(logging.INFO)
 
 LINE_BOT_API_REPLY = 'https://api.line.me/v2/bot/message/reply'
 
@@ -23,10 +31,9 @@ LINE_HEADERS = {
 
 
 def lambda_handler(event, context):
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
 
     try:
+        logger.debug(event)
         msg = event['events'][0]
         text = msg['message']['text']
         reply_token = msg['replyToken']
@@ -38,6 +45,12 @@ def lambda_handler(event, context):
         else:
             line_code = ''
 
+        logger.debug(msg)
+        logger.debug(text)
+        logger.debug(reply_token)
+        logger.debug(chat_type)
+        logger.debug(line_code)
+
         if text.find('得') > -1 or text.find('節') > -1 or  text.find('金') > -1:
             messages = get_messages.information()
         elif text.find('天気') > -1 or text.find('雨') > -1 or  text.find('雪') > -1 or text.find('晴') > -1:
@@ -47,24 +60,31 @@ def lambda_handler(event, context):
         else:
             messages = get_messages.docomo_response(text)
 
+        logger.debug(messages)
+
         payload = {
             "replyToken": reply_token,
             "messages": messages
         }
+
+        logger.debug(payload)
 
         post_response = requests.post(
             LINE_BOT_API_REPLY,
             headers=LINE_HEADERS,
             data=json.dumps(payload)
         )
-        logger.info(post_response)
 
+        logger.debug(post_response.text)
 
         response_event = {
             'line_code': line_code,
             'text': text,
             'reply': messages[0].get('text','information')
         }
+
+        logger.debug(response_event)
+
         client = boto3.client('stepfunctions')
         client.start_execution(
             stateMachineArn=os.environ['STATE_MACHINE_ARN'],
